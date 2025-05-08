@@ -14,7 +14,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ThunkDispatch} from '@reduxjs/toolkit';
-import {fetchDrivers, listSelectors, listActions} from '@src/store/listSlice';
+import {fetchDrivers, listSelectors, listActions} from '@src/store';
 import {CardItem} from './CardItem';
 
 interface Styles {

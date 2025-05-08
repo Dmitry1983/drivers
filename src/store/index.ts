@@ -4,6 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import listSlice from './listSlice';
 import driverSlice from './driverSlice';
 
+export * from './driverSlice';
+export * from './listSlice';
+
 const rootReducer = combineReducers({
   list: listSlice.reducer,
   driver: driverSlice.reducer,

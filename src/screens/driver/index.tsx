@@ -14,7 +14,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ThunkDispatch} from '@reduxjs/toolkit';
-import {fetchDriver, driverSelectors} from '@src/store/driverSlice';
+import {fetchDriver, driverSelectors} from '@src/store';
 import {get, isEmpty} from 'lodash';
 
 interface Styles {
