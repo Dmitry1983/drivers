@@ -7,6 +7,8 @@ import {
   TextStyle,
   ScrollView,
   ActivityIndicator,
+  Button,
+  Linking,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -39,6 +41,13 @@ export const DriverScreen = (props: any) => {
   const {bottom} = useSafeAreaInsets();
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const driver = useSelector(driverSelectors.itemSelector);
+
+  const givenName = get(driver, ['givenName'], '');
+  const familyName = get(driver, ['familyName'], '');
+  const dateOfBirth = get(driver, ['dateOfBirth'], '');
+  const nationality = get(driver, ['nationality'], '');
+  const url = get(driver, ['url'], '');
+
   const loading = useSelector(driverSelectors.loadingSelector);
   const error = useSelector(driverSelectors.errorSelector);
 
@@ -52,11 +61,17 @@ export const DriverScreen = (props: any) => {
       {error && <Text>Error: {error}</Text>}
       {!loading && !error && (
         <ScrollView>
-          <Text style={styles.text}>driverId: {driver.driverId}</Text>
-          <Text style={styles.text}>givenName: {driver.givenName}</Text>
-          <Text style={styles.text}>familyName: {driver.familyName}</Text>
-          <Text style={styles.text}>dateOfBirth: {driver.dateOfBirth}</Text>
-          <Text style={styles.text}>nationality: {driver.nationality}</Text>
+          <Text style={styles.text}>driverId: {driverId}</Text>
+          <Text style={styles.text}>givenName: {givenName}</Text>
+          <Text style={styles.text}>familyName: {familyName}</Text>
+          <Text style={styles.text}>dateOfBirth: {dateOfBirth}</Text>
+          <Text style={styles.text}>nationality: {nationality}</Text>
+          <Button
+            title="GOTO Wiki"
+            onPress={() => {
+              Linking.openURL(url);
+            }}
+          />
         </ScrollView>
       )}
     </View>
