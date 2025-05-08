@@ -12,9 +12,7 @@ export const fetchDrivers = createAsyncThunk(
     const {data} = response;
     // console.log({data});
     // Возвращаем массив водителей
-    const result = get(data, ['MRData', 'DriverTable', 'Drivers'], []);
-    return result;
-    // return data.MRData.DriverTable.Drivers;
+    return get(data, ['MRData', 'DriverTable', 'Drivers'], []);
   },
 );
 

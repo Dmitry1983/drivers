@@ -12,8 +12,7 @@ export const fetchDriver = createAsyncThunk(
 
     const {data} = response;
     // Возвращаем информацию водителя по driverId
-    const result = get(data, ['MRData', 'DriverTable', 'Drivers', 0], []);
-    return result;
+    return get(data, ['MRData', 'DriverTable', 'Drivers', 0], []);
   },
 );
 
