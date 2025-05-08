@@ -6,11 +6,9 @@ import {get} from 'lodash';
 export const fetchDriver = createAsyncThunk(
   'driver/fetchDriver',
   async ({driverId}: {driverId: string}) => {
-    const response = await axios.get(
+    const {data} = await axios.get(
       `https://ergast.com/api/f1/drivers/${driverId}.json`,
     );
-
-    const {data} = response;
     // Возвращаем информацию водителя по driverId
     return get(data, ['MRData', 'DriverTable', 'Drivers', 0], []);
   },
@@ -57,7 +55,5 @@ const driverSlice = createSlice({
 });
 
 export const driverActions = driverSlice.actions;
-
-export default driverSlice;
-
 export const driverSelectors = driverSlice.selectors;
+export default driverSlice;

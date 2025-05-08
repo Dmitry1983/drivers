@@ -6,11 +6,9 @@ import {get} from 'lodash';
 export const fetchDrivers = createAsyncThunk(
   'list/fetchDrivers',
   async ({limit, offset}: {limit: number; offset: number}) => {
-    const response = await axios.get(
+    const {data} = await axios.get(
       `https://ergast.com/api/f1/drivers.json?limit=${limit}&offset=${offset}`,
     );
-    const {data} = response;
-    // console.log({data});
     // Возвращаем массив водителей
     return get(data, ['MRData', 'DriverTable', 'Drivers'], []);
   },
@@ -66,7 +64,5 @@ const listSlice = createSlice({
 });
 
 export const listActions = listSlice.actions;
-
-export default listSlice;
-
 export const listSelectors = listSlice.selectors;
+export default listSlice;
