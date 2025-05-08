@@ -12,7 +12,7 @@ export const fetchDrivers = createAsyncThunk(
     const {data} = response;
     // console.log({data});
     // Возвращаем массив водителей
-    const result = get(data, ['MRData', 'DriverTable', 'Drivers']);
+    const result = get(data, ['MRData', 'DriverTable', 'Drivers'], []);
     return result;
     // return data.MRData.DriverTable.Drivers;
   },
@@ -43,6 +43,13 @@ const listSlice = createSlice({
     },
     setReset: () => initialState,
   },
+  selectors: {
+    itemsSelector: (state: InitialState) => state.items,
+    currentPageSelector: (state: InitialState) => state.currentPage,
+    pageSizeSelector: (state: InitialState) => state.pageSize,
+    loadingSelector: (state: InitialState) => state.loading,
+    errorSelector: (state: InitialState) => state.error,
+  },
   extraReducers: builder => {
     builder
       .addCase(fetchDrivers.pending, state => {
@@ -64,18 +71,4 @@ export const listActions = listSlice.actions;
 
 export default listSlice;
 
-// Селекторы
-export const itemsSelector = (state: InitialState) => state.list.items;
-export const currentPageSelector = (state: InitialState) =>
-  state.list.currentPage;
-export const pageSizeSelector = (state: InitialState) => state.list.pageSize;
-export const loadingSelector = (state: InitialState) => state.list.loading;
-export const errorSelector = (state: InitialState) => state.list.error;
-
-export const listSelectors = {
-  itemsSelector,
-  currentPageSelector,
-  pageSizeSelector,
-  loadingSelector,
-  errorSelector,
-};
+export const listSelectors = listSlice.selectors;

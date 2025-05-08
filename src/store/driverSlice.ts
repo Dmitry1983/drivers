@@ -12,7 +12,7 @@ export const fetchDriver = createAsyncThunk(
 
     const {data} = response;
     // Возвращаем информацию водителя по driverId
-    const result = get(data, ['MRData', 'DriverTable', 'Drivers', 0]);
+    const result = get(data, ['MRData', 'DriverTable', 'Drivers', 0], []);
     return result;
   },
 );
@@ -35,6 +35,11 @@ const driverSlice = createSlice({
   reducers: {
     setReset: () => initialState,
   },
+  selectors: {
+    itemSelector: (state: InitialState) => state.item,
+    loadingSelector: (state: InitialState) => state.loading,
+    errorSelector: (state: InitialState) => state.error,
+  },
   extraReducers: builder => {
     builder
       .addCase(fetchDriver.pending, state => {
@@ -56,13 +61,4 @@ export const driverActions = driverSlice.actions;
 
 export default driverSlice;
 
-// Селекторы
-export const itemSelector = (state: InitialState) => state.driver.item;
-export const loadingSelector = (state: InitialState) => state.driver.loading;
-export const errorSelector = (state: InitialState) => state.driver.error;
-
-export const driverSelectors = {
-  itemSelector,
-  loadingSelector,
-  errorSelector,
-};
+export const driverSelectors = driverSlice.selectors;
