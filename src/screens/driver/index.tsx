@@ -9,12 +9,13 @@ import {
   ActivityIndicator,
   Button,
   Linking,
+  Alert,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ThunkDispatch} from '@reduxjs/toolkit';
 import {fetchDriver, driverSelectors} from '@src/store/driverSlice';
-import {get} from 'lodash';
+import {get, isEmpty} from 'lodash';
 
 interface Styles {
   container: StyleProp<ViewStyle>;
@@ -55,6 +56,15 @@ export const DriverScreen = (props: any) => {
     dispatch(fetchDriver({driverId}));
   }, [driverId, dispatch]);
 
+  const alertShowHandler = () => Alert.alert('url is Empty!');
+
+  const goToUrlHandler = () => {
+    if (isEmpty(url)) {
+      return alertShowHandler();
+    }
+    Linking.openURL(url);
+  };
+
   return (
     <View style={[styles.container, {paddingBottom: bottom}]}>
       {loading && <ActivityIndicator size={'large'} />}
@@ -66,12 +76,7 @@ export const DriverScreen = (props: any) => {
           <Text style={styles.text}>familyName: {familyName}</Text>
           <Text style={styles.text}>dateOfBirth: {dateOfBirth}</Text>
           <Text style={styles.text}>nationality: {nationality}</Text>
-          <Button
-            title="GOTO Wiki"
-            onPress={() => {
-              Linking.openURL(url);
-            }}
-          />
+          <Button title="GOTO Wiki" onPress={goToUrlHandler} />
         </ScrollView>
       )}
     </View>
