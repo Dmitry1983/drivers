@@ -3,15 +3,16 @@ import axios from 'axios';
 import {get} from 'lodash';
 import {BASE_URL} from '@src/config';
 
-// Асинхронный thunk для загрузки водителей
-export const fetchDrivers = createAsyncThunk(
-  'list/fetchDrivers',
-  async ({limit, offset}: {limit: number; offset: number}) => {
+// Асинхронный thunk для загрузки заездов водителя  за выбранный сезон
+export const fetchRacesOneSeason = createAsyncThunk(
+  'race/fetchRacesOneSeason',
+  async ({driverId, season}: {driverId: string; season: string}) => {
     const {data} = await axios.get(
-      `${BASE_URL}/drivers.json?limit=${limit}&offset=${offset}`,
+      `${BASE_URL}/${season}/drivers/${driverId}/results.json?&limit=100`,
     );
-    // Возвращаем массив водителей
-    return get(data, ['MRData', 'DriverTable', 'Drivers'], []);
+    console.log('fetchRaces', {data});
+    // Возвращаем массив заездов водителя за выбранный сезон
+    return get(data, ['MRData', 'RaceTable', 'Races'], []);
   },
 );
 
@@ -31,8 +32,8 @@ const initialState: InitialState = {
   error: null,
 };
 
-const listSlice = createSlice({
-  name: 'list',
+const raceSlice = createSlice({
+  name: 'race',
   initialState,
   reducers: {
     setPage(state, action) {
@@ -49,21 +50,21 @@ const listSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(fetchDrivers.pending, state => {
+      .addCase(fetchRacesOneSeason.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchDrivers.fulfilled, (state, action) => {
+      .addCase(fetchRacesOneSeason.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload;
       })
-      .addCase(fetchDrivers.rejected, (state, action) => {
+      .addCase(fetchRacesOneSeason.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
   },
 });
 
-export const listActions = listSlice.actions;
-export const listSelectors = listSlice.selectors;
-export default listSlice;
+export const raceActions = raceSlice.actions;
+export const raceSelectors = raceSlice.selectors;
+export default raceSlice;

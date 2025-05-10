@@ -13,8 +13,15 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {ThunkDispatch} from '@reduxjs/toolkit';
-import {fetchDrivers, listSelectors, listActions} from '@src/store';
+import {ThunkDispatch} from 'redux-thunk';
+import {Action} from 'redux';
+import {
+  fetchDrivers,
+  listSelectors,
+  listActions,
+  driverActions,
+  raceActions,
+} from '@src/store';
 import {CardItem} from './CardItem';
 
 interface Styles {
@@ -55,9 +62,20 @@ const styles: Styles = {
   },
 };
 
+export type Driver = {
+  dateOfBirth: string;
+  driverId: string;
+  familyName: string;
+  givenName: string;
+  nationality: string;
+  url: string;
+};
+
+type AppDispatch = ThunkDispatch<any, undefined, Action>;
+
 export const MainScreen = () => {
   const {bottom} = useSafeAreaInsets();
-  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const dispatch = useDispatch<AppDispatch>();
 
   const items = useSelector(listSelectors.itemsSelector);
   const pageSize = useSelector(listSelectors.pageSizeSelector);
@@ -67,7 +85,9 @@ export const MainScreen = () => {
 
   const [isRefreshing, setIsRefreshing] = React.useState(false);
 
-  const isIOS = Platform.OS === 'ios';
+  // console.log({isRefreshing, loading, error});
+
+  const isIOS = React.useMemo(() => Platform.OS === 'ios', []);
 
   const refreshControl = (
     <RefreshControl
@@ -80,10 +100,14 @@ export const MainScreen = () => {
 
   React.useEffect(() => {
     const offset = (currentPage - 1) * pageSize;
-    isRefreshing && dispatch(listActions.setReset());
+    if (isRefreshing) {
+      dispatch(listActions.setReset());
+      dispatch(raceActions.setReset());
+      dispatch(driverActions.setReset());
+    }
     !isRefreshing && dispatch(fetchDrivers({limit: 10, offset}));
     setIsRefreshing(false);
-  }, [currentPage, dispatch, pageSize, isRefreshing]);
+  }, [currentPage, isRefreshing, dispatch, pageSize]);
 
   const goToNextPage = () => {
     dispatch(listActions.setPage(currentPage + 1));
@@ -95,6 +119,14 @@ export const MainScreen = () => {
     }
   };
 
+  const renderItem = React.useCallback(({item}: {item: Driver}) => {
+    return <CardItem {...item} />;
+  }, []);
+
+  const keyExtractor = React.useCallback((item: Driver) => {
+    return item.driverId;
+  }, []);
+
   return (
     <View style={styles.container(bottom, isIOS)}>
       <View style={styles.subContainer}>
@@ -105,7 +137,8 @@ export const MainScreen = () => {
           <FlatList
             contentContainerStyle={styles.contentContainerStyle}
             data={items}
-            renderItem={item => <CardItem {...item} />}
+            renderItem={renderItem}
+            keyExtractor={keyExtractor}
             refreshControl={refreshControl}
           />
         )}

@@ -1,10 +1,22 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {MainScreen, DriverScreen} from '@src/screens';
+import * as Screens from '@src/screens';
 import {get} from 'lodash';
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+  Main: undefined;
+  Driver: {
+    driverId: string;
+    seasons: string;
+  };
+  Race: {
+    driverId: string;
+    title: string;
+  };
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const titleHeader = (route: any) => {
   const driverId = get(route, ['params', 'driverId'], '');
@@ -23,12 +35,19 @@ const RootStack = () => {
       }}>
       <Stack.Screen
         name="Main"
-        component={MainScreen}
+        component={Screens.MainScreen}
         options={{title: 'Drivers List'}}
       />
       <Stack.Screen
         name="Driver"
-        component={DriverScreen}
+        component={Screens.DriverScreen}
+        options={({route}) => ({
+          title: titleHeader(route),
+        })}
+      />
+      <Stack.Screen
+        name="Race"
+        component={Screens.RaceScreen}
         options={({route}) => ({
           title: titleHeader(route),
         })}

@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import {useNavigation} from '@src/hooks';
 import {get} from 'lodash';
+import {Driver} from './';
 
 interface Styles {
   container: StyleProp<ViewStyle>;
@@ -29,10 +30,11 @@ const styles: Styles = {
   },
 };
 
-export const CardItem = (props: any) => {
-  const familyName = get(props, ['item', 'familyName'], '');
-  const givenName = get(props, ['item', 'givenName'], '');
-  const driverId = get(props, ['item', 'driverId'], '');
+export const CardItem = React.memo((props: Driver) => {
+  console.log('CardItem:', {props});
+  const familyName = get(props, ['familyName'], '');
+  const givenName = get(props, ['givenName'], '');
+  const driverId = get(props, ['driverId'], '');
 
   const {handleGoTo} = useNavigation();
 
@@ -54,4 +56,4 @@ export const CardItem = (props: any) => {
       <Text style={styles.text}>{givenName}</Text>
     </TouchableOpacity>
   );
-};
+});

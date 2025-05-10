@@ -12,14 +12,22 @@ import {
   Alert,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+import {ThunkDispatch} from 'redux-thunk';
+import {Action} from 'redux';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {ThunkDispatch} from '@reduxjs/toolkit';
-import {fetchDriver, driverSelectors} from '@src/store';
+import {fetchDriver, driverSelectors, fetchSeasons} from '@src/store';
 import {get, isEmpty} from 'lodash';
+import {Season} from './Season';
+import {SeasonItem} from './SeasonItem';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '@src/appNavigation';
+
+type Props = NativeStackScreenProps<RootStackParamList, 'Driver'>;
 
 interface Styles {
   container: StyleProp<ViewStyle>;
   text: StyleProp<TextStyle>;
+  seasonsContainer: StyleProp<ViewStyle>;
 }
 
 const styles: Styles = {
@@ -35,13 +43,26 @@ const styles: Styles = {
     paddingVertical: 8,
     fontSize: 18,
   },
+  seasonsContainer: {
+    paddingVertical: 16,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    justifyContent: 'center',
+  },
 };
 
-export const DriverScreen = (props: any) => {
+type AppDispatch = ThunkDispatch<any, undefined, Action>;
+
+export const DriverScreen: React.FC<Props> = props => {
   const driverId = get(props, ['route', 'params', 'driverId'], '');
+  console.log('DriverScreen:', {props});
   const {bottom} = useSafeAreaInsets();
-  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const dispatch = useDispatch<AppDispatch>();
   const driver = useSelector(driverSelectors.itemSelector);
+  const seasons = useSelector(driverSelectors.seasonsSelector);
+
+  console.log({seasons});
 
   const givenName = get(driver, ['givenName'], '');
   const familyName = get(driver, ['familyName'], '');
@@ -53,7 +74,11 @@ export const DriverScreen = (props: any) => {
   const error = useSelector(driverSelectors.errorSelector);
 
   React.useEffect(() => {
-    dispatch(fetchDriver({driverId}));
+    const featching = async () => {
+      await dispatch(fetchDriver({driverId}));
+      await dispatch(fetchSeasons({driverId}));
+    };
+    featching();
   }, [driverId, dispatch]);
 
   const alertShowHandler = () => Alert.alert('url is Empty!');
@@ -70,14 +95,40 @@ export const DriverScreen = (props: any) => {
       {loading && <ActivityIndicator size={'large'} />}
       {error && <Text>Error: {error}</Text>}
       {!loading && !error && (
-        <ScrollView>
-          <Text style={styles.text}>driverId: {driverId}</Text>
-          <Text style={styles.text}>givenName: {givenName}</Text>
-          <Text style={styles.text}>familyName: {familyName}</Text>
-          <Text style={styles.text}>dateOfBirth: {dateOfBirth}</Text>
-          <Text style={styles.text}>nationality: {nationality}</Text>
-          <Button title="GOTO Wiki" onPress={goToUrlHandler} />
-        </ScrollView>
+        <>
+          <ScrollView>
+            <Text style={styles.text}>driverId: {driverId}</Text>
+            <Text style={styles.text}>givenName: {givenName}</Text>
+            <Text style={styles.text}>familyName: {familyName}</Text>
+            <Text style={styles.text}>dateOfBirth: {dateOfBirth}</Text>
+            <Text style={styles.text}>nationality: {nationality}</Text>
+            <Button
+              title="GOTO Wiki"
+              onPress={goToUrlHandler}
+              color={'green'}
+            />
+            <Text>Races by season</Text>
+            <View style={styles.seasonsContainer}>
+              {seasons.map(item => {
+                return (
+                  <React.Fragment key={item.season}>
+                    <Season>
+                      {goToSeasonHandle => {
+                        return (
+                          <SeasonItem
+                            title={item.season}
+                            driverId={driverId}
+                            onPress={goToSeasonHandle}
+                          />
+                        );
+                      }}
+                    </Season>
+                  </React.Fragment>
+                );
+              })}
+            </View>
+          </ScrollView>
+        </>
       )}
     </View>
   );
