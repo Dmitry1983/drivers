@@ -18,7 +18,13 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const titleHeader = (route: any) => {
+type TitleHeader = {
+  params: {
+    driverId: string;
+    title?: string;
+  };
+};
+const titleHeader = (route: TitleHeader) => {
   const driverId = get(route, ['params', 'driverId'], '');
   const title = get(route, ['params', 'title'], driverId);
   return title;
