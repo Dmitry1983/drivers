@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, RouteProp} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import * as Screens from '@src/screens';
 import {get} from 'lodash';
@@ -30,6 +30,13 @@ const titleHeader = (route: TitleHeader) => {
   return title;
 };
 
+type DriverRouteProp = RouteProp<RootStackParamList, 'Driver'>;
+type RaceRouteProp = RouteProp<RootStackParamList, 'Race'>;
+
+const headerOptions = ({route}: {route: DriverRouteProp | RaceRouteProp}) => ({
+  title: titleHeader(route),
+});
+
 const RootStack = () => {
   return (
     <Stack.Navigator
@@ -47,16 +54,12 @@ const RootStack = () => {
       <Stack.Screen
         name="Driver"
         component={Screens.DriverScreen}
-        options={({route}) => ({
-          title: titleHeader(route),
-        })}
+        options={headerOptions}
       />
       <Stack.Screen
         name="Race"
         component={Screens.RaceScreen}
-        options={({route}) => ({
-          title: titleHeader(route),
-        })}
+        options={headerOptions}
       />
     </Stack.Navigator>
   );
