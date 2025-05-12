@@ -32,8 +32,9 @@ const titleHeader = (route: TitleHeader) => {
 
 type DriverRouteProp = RouteProp<RootStackParamList, 'Driver'>;
 type RaceRouteProp = RouteProp<RootStackParamList, 'Race'>;
+type Route = DriverRouteProp | RaceRouteProp;
 
-const headerOptions = ({route}: {route: DriverRouteProp | RaceRouteProp}) => ({
+const headerOptions = ({route}: {route: Route}) => ({
   title: titleHeader(route),
 });
 
