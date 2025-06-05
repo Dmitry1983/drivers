@@ -34,8 +34,8 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    // Causes issues with package.json "exports"
     "forceConsistentCasingInFileNames": false,
+    "baseUrl": "./",
     "paths": {
       "@src/*": ["src/*"]
     }
