@@ -17,6 +17,7 @@ export const useNavigation = () => {
   };
 
   // Дженерик T — экран, params — параметры для этого экрана
+  //
   const handleGoTo = <T extends keyof RootStackParamList>({
     screen,
     params,
