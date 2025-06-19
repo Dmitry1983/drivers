@@ -8,6 +8,7 @@ export const fetchDriver = createAsyncThunk(
   'driver/fetchDriver',
   async ({driverId}: {driverId: string}) => {
     const {data} = await axios.get(`${BASE_URL}/drivers/${driverId}.json`);
+    console.log('DriverList:',{data})
     // Возвращаем информацию водителя по driverId
     return get(data, ['MRData', 'DriverTable', 'Drivers', 0], []);
   },

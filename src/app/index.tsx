@@ -8,9 +8,9 @@ import {
 } from 'react-native-safe-area-context';
 import {store, persistor} from '@src/store';
 
-if (__DEV__) {
-  require('react-native-devsettings/withAsyncStorage');
-}
+// if (__DEV__) {
+//   require('react-native-devsettings/withAsyncStorage');
+// }
 
 export const App: React.FC = () => {
   return (
